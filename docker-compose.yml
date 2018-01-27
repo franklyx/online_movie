@@ -1,0 +1,47 @@
+version: "3.2"
+
+services:
+
+  video_service1:
+    build: ./doc/video
+    image: video:v1
+    container_name: video1
+    ports:
+      - 8887:8887
+    volumes:
+      - ./code:/home/code
+    command: python manage.py runserver --host 0.0.0.0 --port 8887
+
+  video_service2:
+    image: video:v1
+    container_name: video2
+    ports:
+      - 8888:8888
+    volumes:
+      - ./code:/home/code
+    command: python manage.py runserver --host 0.0.0.0 --port 8888
+
+  video_service3:
+    image: video:v1
+    container_name: video3
+    ports:
+      - 8889:8889
+    volumes:
+      - ./code:/home/code
+    command: python manage.py runserver --host 0.0.0.0 --port 8889
+
+  nginx_service:
+    build: ./doc/nginx
+    image: video_nginx:v1
+    container_name: video_nginx
+    depends_on:
+      - video_service1:
+        condition: service_started
+      - video_service2:
+        condition: service_started
+      - video_service3:
+        condition: service_started
+    links:
+      - video_service1
+      - video_service2
+      - video_service3

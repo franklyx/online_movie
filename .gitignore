@@ -1,0 +1,10 @@
+*.pyc
+*.~
+*.log
+*.so
+*.egg
+*.egg-info
+dist
+build
+.idea
+.DS_Store
