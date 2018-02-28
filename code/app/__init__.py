@@ -14,10 +14,10 @@ from flask.ext.redis import FlaskRedis
 
 # flask config
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:admin@10.9.36.126:3306/movie'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:admin@127.0.0.1:3306/movie'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["SECRET_KEY"] = "8cb29f459108417b8513d397b8e0c83a"
-app.config["REDIS_URL"] = "redis://10.9.36.126:6379/0"
+app.config["REDIS_URL"] = "redis://127.0.0.1:6379/0"
 app.config["UP_DIR"] = os.path.join(os.path.abspath(os.path.dirname(__file__)), "static/uploads/")
 app.config["FC_DIR"] = os.path.join(os.path.abspath(os.path.dirname(__file__)), "static/uploads/users/")
 app.debug = True
@@ -25,6 +25,8 @@ db = SQLAlchemy(app)
 rd = FlaskRedis(app)
 
 # logging
+if not os.path.exists("/home/logs/flask.log"):
+    os.mkdir("/home/logs/flask.log")
 handler = RotatingFileHandler('/home/logs/flask.log', encoding='UTF-8', maxBytes=1024 * 1024, mode="a")
 handler.setLevel(logging.DEBUG)
 logging_format = logging.Formatter(
