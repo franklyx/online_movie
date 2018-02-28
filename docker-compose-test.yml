@@ -1,0 +1,39 @@
+version: "3.2"
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: exit 0
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    ports:
+      - 3307:3307
+    environment:
+      - MYSQL_ROOT_PASSWORD=root321
+    healthcheck:
+      test: exit 0
+
+  video_service:
+    build: ./doc/video
+    image: video:v1
+    container_name: video
+    ports:
+      - 8888:8888
+    volumes:
+      - ./code:/home/code
+    command: python manage.py runserver --host 0.0.0.0 --port 8888
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    links:
+      - redis
+      - mysql
+
